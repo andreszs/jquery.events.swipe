@@ -9,7 +9,7 @@ This extension has been created because most other scripts can't handle both Poi
 $('.selector').on('swipeleft',  function(){ /* Left swipe gesture */ });
 $('.selector').on('swiperight', function(){ /* Right swipe gesture */ });
 ```
-:warning: **Warning: Read the *Implementing the touch-action CSS property* section to add the required CSS attributes**
+:warning: **Read the *Implementing the touch-action CSS property* section to add the required CSS attributes to the selector element, otherwise swipe events will fail on certain devices / browsers** :warning:
  
 ## Settings
 *Note: Settings are hard-coded and must be edited manually in the JS file.*
@@ -36,8 +36,8 @@ This script was specifically designed for using swipe events within [Apache Cord
 - [x] Internet Explorer Mobile 11 on Windows Phone 8.1
 - [x] Safari 11 on iOS 11
 
-## Vertical Gestures
-The script does not detect `swipeup` nor `swipedown` gestures, as they will inevitably interfere with regular vertical scrolling. It is intended mainly for mobile sites.
+## Vertical Gestures and Horizontal Scrolling
+The script does not detect `swipeup` nor `swipedown` gestures, as they will inevitably interfere with regular vertical scrolling. It is intended mainly for mobile sites. Additionally, if you apply the swipe events to the entire HTML body, horizontal page scrolling will naturally be intercepted (and neutralized) by the event handler.
 
 ## Pointer Events vs. Touch Events
 This script supports both the new [PointerEvent](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent) and the legacy [TouchEvent](https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent) interfaces, prioritizing the former. Also supports the prefixed [MSPointerEvent](https://msdn.microsoft.com/en-us/library/hh772103.aspx) interface, exclusive to Internet Explorer 10.
@@ -47,15 +47,15 @@ Pointer Events, [proposed by Microsoft](https://www.w3.org/TR/pointerevents/), a
 
 > The touch-action CSS property specifies whether, and in what ways, a given region can be manipulated by the user via a touchscreen (for instance, by panning or zooming features built into the browser).
 
-### Possible touch-action CSS values and its effects
-1. Object with `touch-action` `unset` or `auto`:
+### Possible touch-action CSS values and its effects on the swipe event
+1. Elements with `touch-action` `unset` or `auto`: :negative_squared_cross_mark: (NOT recommended)
    - Will immediately trigger the `pointercancel` event before our swipe is detected, spoiling the gesture. (BAD)
    - As soon as `pointercancel` is triggered, the browser takes control of the gesture to perform regular pan actions.
    - Not even `e.PreventDefault()` will be enough to prevent `pointercancel` from firing.
-2. Object with `touch-action: none`:
+2. Elements with `touch-action: none`: :negative_squared_cross_mark: (NOT recommended)
    - Prevents the `pointercancel` event and allow us to correctly detect the horizontal swipe gesture. (GOOD)
    - Disables browser handling of all panning / scrolling and zooming gestures. (BAD)
-3. Object with `touch-action: pan-y`:
+3. Elements with `touch-action: pan-y`: :ballot_box_with_check: (RECOMMENDED)
    - Prevents the `pointercancel` event and allow us to correctly detect the horizontal swipe gesture. (GOOD)
    - Allows vertical scroll normally. (GOOD)
 
